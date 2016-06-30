@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2015 Tampere University of Technology, Pori Department
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ 
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<project name="restlet" basedir=".">
+	<property environment="env."/>
+	<property name="env.CLASSPATH" value=""/>
+	<fail message="Unset $CLASSPATH / %CLASSPATH% before running Ant!">
+		<condition>
+			<not>
+				<equals arg1="${env.CLASSPATH}" arg2=""/>
+			</not>
+		</condition>
+	</fail>
+
+	<property file="build.properties"/>	
+
+	<!-- These properties do not necessarily have to be changed -->
+	<property name="build" location="${basedir}/build"/>
+	<property name="dist" location="${basedir}/dist"/>
+	<property name="app.name" value="restlet"/>
+	<property name="doc.dir" value="${source.dir}/javadoc"/>
+	<property name="sources.package" value="sources"/>
+
+	<path id="classpath">
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+		<!--<fileset dir="dist">
+			<include name="*.jar"/>
+		</fileset>-->
+	</path>
+
+	<target name="init">
+		<tstamp/>
+		<mkdir dir="${build}"/>
+	</target>
+
+	<target name="clean" description="Clears the Application's build directory">
+		<echo message="Emptying build directory ..."/>
+		<delete failonerror="false" includeEmptyDirs="true">
+			<fileset dir="${build}" includes="**/*"/>
+			<fileset dir="${dist}" includes="**/*"/>
+		</delete>
+	</target>
+
+	<target name="prepare" description="Creates the Application's build directory structure" depends="src_build">
+		<echo message="Creating ${app.name}'s directory structure ..."/>
+		<mkdir dir="${dist}"/>
+		<mkdir dir="${dist}/${app.name}"/>
+		<mkdir dir="${dist}/${app.name}/lib"/>
+		<mkdir dir="${build}"/>
+		<mkdir dir="${build}/classes"/>
+		<copy todir="${build}/classes">
+			<fileset dir="conf">
+				<include name="log4j2.xml"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build" description="Builds the Application" depends="prepare">
+		<echo message="Building ${app.name} ..."/>
+		<javac srcdir="src" 
+				destdir="${build}/classes"
+				debug="false"
+				includeantruntime="true"
+				classpathref="classpath">
+			<include name="**/*.java"/>
+		</javac>
+	</target>
+
+	<target name="package" description="Packages the Application's jar file" depends="build">
+		<echo message="Packaging ${app.name}'s jar file ..."/>
+		<jar jarfile="${dist}/${app.name}/${app.name}.jar">
+			<fileset dir="${build}/classes" includes="**"/>
+		</jar>
+		<copy todir="${dist}/${app.name}/lib">
+			<fileset dir="lib">
+				<include name="*.jar"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Generate javadocs for current project into ${doc.dir} -->
+	<target name="doc" description="Generate documentation" depends="package">
+		<echo message="Generating ${source.dir}'s javadocs ..."/>
+		<fail message="Set these properties (tomcat.home '${tomcat.home}'; tut.pori.javadocer.rest_uri '${tut.pori.javadocer.rest_uri}'; source.dir '${source.dir}') before continuing!">
+			<condition>
+				<or>
+					<not>
+						<isset property="tomcat.home"/>
+					</not>
+					<not>
+						<isset property="tut.pori.javadocer.rest_uri"/>
+					</not>
+					<not>
+						<isset property="source.dir"/>
+					</not>
+				</or>
+			</condition>
+		</fail>
+		<delete dir="${doc.dir}"/>
+		<javadoc
+				sourcepath="${source.dir}/src"
+				additionalparam="-J-Dtut.pori.javadocer.rest_uri=${tut.pori.javadocer.rest_uri} @${source.dir}/options"
+				verbose="false"
+				failonerror="true"
+				destdir="${doc.dir}">
+			<classpath>
+				<fileset dir="${source.dir}/lib">
+					<include name="*.jar"/>
+				</fileset>
+				<fileset dir="${tomcat.home}/lib">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+			<taglet name="tut.pori.javadocer.Restlet">
+				<path path="${dist}/${app.name}/${app.name}.jar">
+					<fileset dir="${dist}/${app.name}/lib">
+						<include name="*.jar"/>
+					</fileset>
+				</path>
+			</taglet>
+			<taglet name="tut.pori.javadocer.Valuelet">
+				<path path="${dist}/${app.name}/${app.name}.jar">
+					<fileset dir="${dist}/${app.name}/lib">
+						<include name="*.jar"/>
+					</fileset>
+					<!-- compiled target source files (i.e. jars) must be included here for Valuelet to be able to resolve the fields by using reflection -->
+					<fileset dir="${dist}">
+						<include name="*.jar"/>
+					</fileset>
+				</path>
+			</taglet>
+		</javadoc>
+	</target>
+
+	<target name="src_build" description="Build target source files from ${source.dir}" depends="init">
+		<echo message="Build target source files from ${source.dir} ..."/>
+		<ant antfile="${source.dir}/build.xml" target="build">
+			<property name="basedir" value="${source.dir}"/>
+			<property name="app.name" value="${sources.package}"/>
+		</ant>
+	</target>
+</project>
