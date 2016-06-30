@@ -92,8 +92,8 @@ public class Restlet implements Taglet {
     }
 
     /**
-     * Given the <code>Tag</code> representation of this custom tag, return its string representation.
-     * @param tag the <code>Tag</code> representation of this custom tag.
+     * @param tag the tag detected by Javadoc.
+     * @return The output formatted as HTML.
      */
     @Override
 	public String toString(Tag tag) {

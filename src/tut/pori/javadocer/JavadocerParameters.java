@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
 import tut.pori.javadocer.Javadocer.MethodType;
 
 /**
- * Parser for Javadocer parameters
+ * A class that parses and contains Javadocer parameters
  */
 public class JavadocerParameters{
 	/** service method parameter declaration */

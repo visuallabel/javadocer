@@ -24,11 +24,12 @@ import com.sun.tools.doclets.internal.toolkit.taglets.TagletWriter;
 import com.sun.tools.doclets.internal.toolkit.taglets.ValueTaglet;
 
 /**
- * Extends the default \@value tag by removing the unnecessary "" around the value.
+ * Extends the default \@value tag by removing the unnecessary "" around the value, has no effect on the RESTlet functionality.
  * 
  * Note that this uses Java's internal classes, see the commented code for implementations for different Java versions.
  * 
  * Optionally, simply using other name for the tag than \@value for values, would remove the need to use internal classes.
+ * 
  */
 public class Valuelet extends ValueTaglet {
 	
