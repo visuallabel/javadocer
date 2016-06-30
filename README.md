@@ -14,7 +14,7 @@
  limitations under the License.
 
 
-Edit the file for build.properties to fit your use case.
+Edit the file build.properties to fit your use case.
 
 You need to manually include in your build path the tools.jar generally found
 in the Java JDK installation path (lib directory).
