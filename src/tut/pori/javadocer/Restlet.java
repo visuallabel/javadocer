@@ -109,7 +109,7 @@ public class Restlet implements Taglet {
 			LOGGER.warn("Failed to retrieve content.");
 			return null;
 		}else{
-			return "<pre>"+StringEscapeUtils.escapeHtml4(content)+"</pre>"; // simply use pre tags to preserve any pretty print, we could also do more fine-tuned format
+			return "<pre>"+StringEscapeUtils.escapeHtml4(content)+"</pre>"; // simply use pre tags to preserve any pretty print, we could also do more fine-tuned format, we could also print the request here as we know all parameters utilized
 		}
     }
     
