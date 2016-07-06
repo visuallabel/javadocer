@@ -30,6 +30,7 @@ import com.sun.tools.doclets.internal.toolkit.taglets.ValueTaglet;
  * 
  * Optionally, simply using other name for the tag than \@value for values, would remove the need to use internal classes.
  * 
+ * For usage instructions, follow the Oracle's guide at <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/javadoc/taglet/overview.html">Taglet Overview</a>.
  */
 public class Valuelet extends ValueTaglet {
 	

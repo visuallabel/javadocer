@@ -55,7 +55,7 @@ import org.xml.sax.SAXException;
  * Javadocer class.
  * 
  * Creates pretty printed XML responses from external sources (REST). Use {@link JavadocerParameters} and {@link Javadocer#retrieveContent(JavadocerParameters)}. 
- * Javadocer expects to have property {@value Javadocer#PROPERTY_REST_URI} to be set.
+ * Javadocer expects to have property {@value tut.pori.javadocer.Javadocer#PROPERTY_REST_URI} to be set.
  * 
  * This implementation expects the following attributes:
  * <ul>
@@ -85,7 +85,7 @@ import org.xml.sax.SAXException;
  * 
  */
 public class Javadocer implements Closeable {
-	/** REST base uri for path for method calls */
+	/** System property name used to define the REST base URI */
 	public static final String PROPERTY_REST_URI = "tut.pori.javadocer.rest_uri";
 	private static final Logger LOGGER = Logger.getLogger(Javadocer.class);
 	private static final String CHARSET = "UTF-8";
@@ -95,7 +95,7 @@ public class Javadocer implements Closeable {
 	private String _restUri = null;
 	private Transformer _transformer = null;
 	private XPath _xPath = null;
-	
+
 	/**
 	 * the type of the HTTP method call
 	 *
@@ -107,9 +107,9 @@ public class Javadocer implements Closeable {
 		GET("GET"),
 		/** HTTP method type POST */
 		POST("POST");
-		
+
 		private String _value;
-		
+
 		/**
 		 * 
 		 * @param value
@@ -117,7 +117,7 @@ public class Javadocer implements Closeable {
 		private MethodType(String value){
 			_value = value;
 		}
-		
+
 		/**
 		 * 
 		 * @param value
@@ -148,7 +148,7 @@ public class Javadocer implements Closeable {
 		if(StringUtils.isBlank(_restUri)){
 			throw new IllegalArgumentException("Bad "+PROPERTY_REST_URI);
 		}
-		
+
 		try {
 			_documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			_transformer = TransformerFactory.newInstance().newTransformer();
@@ -162,11 +162,11 @@ public class Javadocer implements Closeable {
 			LOGGER.error(ex, ex);
 			throw new IllegalArgumentException("Failed to create document builder/transformer instance.");
 		}
-		
+
 		_xPath = XPathFactory.newInstance().newXPath();
 		_client = HttpClients.createDefault();
 	}
-	
+
 	/**
 	 * 
 	 * @param service
@@ -190,7 +190,7 @@ public class Javadocer implements Closeable {
 		}
 		return uri.toString();
 	}
-	
+
 	/**
 	 * 
 	 * @param params 
@@ -242,7 +242,7 @@ public class Javadocer implements Closeable {
 			default:
 				throw new IllegalArgumentException("Unknown type: "+params.getType());
 		}
-	
+
 		LOGGER.debug("Calling url: "+uri);
 		try(CloseableHttpResponse response = _client.execute(request)){
 			StatusLine statusLine = response.getStatusLine();
@@ -263,7 +263,7 @@ public class Javadocer implements Closeable {
 			throw new IllegalArgumentException("Failed to parse response from url: "+uri);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param doc
@@ -278,7 +278,7 @@ public class Javadocer implements Closeable {
 			LOGGER.debug("No element "+ELEMENT_EXAMPLE);
 			return null;
 		}
-		
+
 		NodeList childNodes = null;
 		Node root = doc.getDocumentElement();
 		for(int i=0,count=nodes.getLength();i<count;++i){
@@ -292,7 +292,7 @@ public class Javadocer implements Closeable {
 			LOGGER.debug("No valid element "+ELEMENT_EXAMPLE);
 			return null;
 		}
-		
+
 		Node node = null;
 		for(int i=0,count=childNodes.getLength();i<count;++i){
 			Node child = childNodes.item(i);
@@ -303,7 +303,7 @@ public class Javadocer implements Closeable {
 		}
 		return node;
 	}
-	
+
 	@Override
 	public void close() {
 		if(_client != null){
@@ -314,7 +314,7 @@ public class Javadocer implements Closeable {
 			}
 		}
 	}
-	
+
 	/**
 	 * converts the given node into an xml document and prints out that xml document
 	 * 
@@ -336,7 +336,7 @@ public class Javadocer implements Closeable {
 			throw new IllegalArgumentException("Invalid transformer settings.");
 		}
 	}
-	
+
 	/**
 	 * clean whitespace around tags
 	 * 
@@ -347,9 +347,9 @@ public class Javadocer implements Closeable {
 		try {
 			NodeList nodeList = (NodeList) _xPath.evaluate("//text()[normalize-space()='']", doc, XPathConstants.NODESET);
 			for (int i=0;i<nodeList.getLength();++i) {
-		        Node node = nodeList.item(i);
-		        node.getParentNode().removeChild(node);
-		    }
+				Node node = nodeList.item(i);
+				node.getParentNode().removeChild(node);
+			}
 		} catch (XPathExpressionException ex) {
 			LOGGER.error(ex, ex);
 			throw new IllegalArgumentException("Xpath evaluation failed.");

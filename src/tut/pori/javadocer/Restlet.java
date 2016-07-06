@@ -28,6 +28,7 @@ import com.sun.tools.doclets.Taglet;
 /**
  * Class Restlet is used for retrieving example XML queries by the Javadoc. This inline tag aims to help with maintenance of the documentation.
  *
+ * For usage instructions, follow the Oracle's guide at <a href="http://docs.oracle.com/javase/7/docs/technotes/guides/javadoc/taglet/overview.html">Taglet Overview</a>.
  */
 public class Restlet implements Taglet {
 	/** The name of the tag. Use this name in your code as {&#64;NAME} */

@@ -28,15 +28,15 @@ import tut.pori.javadocer.Javadocer.MethodType;
  * A class that parses and contains Javadocer parameters
  */
 public class JavadocerParameters{
-	/** service method parameter declaration */
+	/** Attribute name for body_uri */
 	public static final String ATTRIBUTE_BODY_URI = "body_uri";
-	/** service method parameter declaration */
+	/** Attribute name for method */
 	public static final String ATTRIBUTE_METHOD = "method";
-	/** service method parameter declaration */
+	/** Attribute name for query uri */
 	public static final String ATTRIBUTE_QUERY = "query";
-	/** service method parameter declaration */
+	/** Attribute name for service */
 	public static final String ATTRIBUTE_SERVICE = "service";
-	/** service method parameter declaration */
+	/** Attribute name for HTTP method type */
 	public static final String ATTRIBUTE_TYPE = "type";
 	private static final Logger LOGGER = Logger.getLogger(JavadocerParameters.class);
 	private String _bodyUri = null;
@@ -62,7 +62,8 @@ public class JavadocerParameters{
 	 * 	<li>type - HTTP method type, e.g. GET, POST</li>
 	 * </ul>
 	 * 
-	 * Parameter values inside [] are assumed to be initialized constants (e.g. package.class#constant for static final String constant in class class and package package), and the values will be resolved before calling the uris.
+	 * Parameter values inside [] are assumed to be initialized constants (e.g. package.class#constant for static final String constant in class <i>class</i> and package <i>package</i>), and the values will be resolved before calling the URIs.
+	 * Note that if [] marking is used, the Javadoc generator must have access to the source code in which the constants are declared.
 	 * 
 	 * @param params String of parameters, e.g. <br/><code>service="ts" method="test" type="POST" query="par1=1&par2=2" body_uri="/ts/test2?par3=3"</code>
 	 * @return the parsed parameters
@@ -240,6 +241,5 @@ public class JavadocerParameters{
 	 */
 	public void setType(MethodType type) {
 		_type = type;
-	}
-	
+	}	
 }
